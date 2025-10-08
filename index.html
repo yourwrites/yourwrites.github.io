@@ -3,138 +3,211 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Student Dashboard | YOUr WRITEs</title>
+    <title>YOUr WRITEs - Boost Your English Writing Skills</title>
     <link
       rel="stylesheet"
       href="../bootstrap-5.3.6-dist/css/bootstrap.min.css"
     />
     <script src="../bootstrap-5.3.6-dist/js/bootstrap.bundle.min.js"></script>
     <style>
+      /* Custom styles to maintain dark theme consistency */
       body {
         background-color: #212121;
         color: white;
       }
-      .card {
-        background-color: #1f1f1f;
-        border: 1px solid #444;
-      }
-      .form-control {
+      .hero-section {
         background-color: #2a2a2a;
+        padding: 80px 0;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        border-bottom: 2px solid #444;
+      }
+      /* Gaya kustom agar konsisten dengan tema gelap */
+      body {
         color: white;
+      }
+      .hero-section {
+        /* HAPUS background-color: #2a2a2a; */
+
+        /* --- KODE TAMBAHAN UNTUK BACKGROUND IMAGE --- */
+        background-image: url(https://i.pinimg.com/1200x/d8/a0/df/d8a0dfc5b6356039df4a6d00cbdf56f1.jpg); /* GANTI DENGAN JALUR GAMBAR ANDA */
+        background-size: cover; /* Pastikan gambar menutupi seluruh area */
+        background-position: center; /* Posisikan di tengah */
+        background-attachment: fixed; /* (Opsional) Efek paralaks saat di-scroll */
+        /* --- AKHIR KODE TAMBAHAN --- */
+
+        padding: 80px 0;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        /* Tambahkan properti untuk membuat konten di atas gambar lebih mudah dibaca */
+        position: relative;
+        z-index: 1; /* Pastikan konten teks di atas overlay */
+        color: white; /* Pastikan teks berwarna putih */
+        border-bottom: 2px solid #444;
+      }
+
+      /* OVERLAY GELAP (PENTING AGAR TEKS BISA DIBACA) */
+      .hero-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(
+          0,
+          0,
+          0,
+          0.6
+        ); /* Warna hitam dengan transparansi 60% */
+        z-index: -1; /* Posisikan di bawah konten teks */
+      }
+      /* Lanjutkan gaya kustom lainnya */
+      .feature-card {
+        background-color: #343a40; /* bg-dark */
         border: 1px solid #444;
+        transition: transform 0.3s;
+      }
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+      }
+      .btn-primary-custom {
+        background-color: #0d6efd; /* Standard Bootstrap blue */
+        border-color: #0d6efd;
+      }
+      .btn-primary-custom:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
       }
     </style>
-    <script>
-      const user = JSON.parse(localStorage.getItem("loggedInUser"));
-
-      // Login & Role Check: Only allow if logged in and not a teacher
-      if (!user || user.role === "guru") {
-        alert("Access denied. Please log in as a student.");
-        window.location.href = "login.html";
-      }
-
-      function logout() {
-        localStorage.removeItem("loggedInUser");
-        window.location.href = "login.html";
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        if (user) {
-          // Display name in navbar and dashboard
-          document.getElementById("navbarUserName").textContent = user.nama;
-          document.getElementById(
-            "user-info"
-          ).textContent = `Hello, ${user.nama}. Welcome to the Student Dashboard.`;
-
-          // Display student writings
-          displayStudentWritings(user.nama);
-        }
-      });
-    </script>
   </head>
-  <body style="background-color: #212121">
+  <body>
     <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="landing.html">
+      <div class="container-fluid col-10">
+        <a class="navbar-brand" href="#">
           <img
             src="/aset gambar gitu brek/logoYOUr WRITES.png"
-            alt="..."
+            alt="Logo"
             width="40"
             class="ml-3"
           />
         </a>
-        <a class="navbar-brand h1" href="index.html">YOUr WRITEs (STUDENT)</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="index.html"
-                >Home</a
-              >
-            </li>
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Feature
-              </a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item" href="latihanmenulis.html"
-                    >Practice</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="materi_grammar.html"
-                    >Grammar</a
-                  >
-                </li>
-              </ul>
-            </li>
-          </ul>
+        <a class="navbar-brand h1" href="#">YOUr WRITEs</a>
 
-          <div class="dropdown ms-auto">
-            <button
-              class="btn btn-dark dropdown-toggle d-flex align-items-center"
-              type="button"
-              id="userDropdown"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                alt="User"
-                width="28"
-                height="28"
-                class="rounded-circle me-2"
-              />
-              <span id="navbarUserName">User</span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li>
-                <a class="dropdown-item text-danger" href="#" onclick="logout()"
-                  >Logout</a
-                >
-              </li>
-            </ul>
-          </div>
+        <div class="ms-auto">
+          <a href="login.html" class="btn btn-outline-light">Login</a>
+          <a href="register.html" class="btn btn-success ms-2">Sign Up</a>
         </div>
       </div>
     </nav>
+    <div
+      style="
+        height: 50px;
+        background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+        background-repeat: repeat;
+        background-color: #2a2a2a;
+        border-bottom: 2px solid #444;
+      "
+    ></div>
+
+    <div class="hero-section">
+      <div class="container col-10">
+        <div class="row align-items-center">
+          <div class="col-md-8 mx-auto">
+            <h1 class="display-3 fw-bold mb-4">
+              Boost Your English Writing Skills!
+            </h1>
+            <p class="lead mb-5 text-primary">
+              YOUr WRITEs is specifically designed for Junior High School
+              students, blending Connectivism, Cognitive Load, and Multimedia
+              Learning theories for a more effective and interactive writing
+              experience.
+            </p>
+            <a href="login.html" class="btn btn-primary-custom btn-lg me-3"
+              >Start Now</a
+            >
+            <a href="#features" class="btn btn-outline-light btn-lg"
+              >Learn Features</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      style="
+        height: 50px;
+        background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+        background-repeat: repeat;
+        background-color: #2a2a2a;
+        border-bottom: 2px solid #444;
+      "
+    ></div>
+
+    <div class="container col-10 py-5" id="features">
+      <h2 class="text-center mb-5 fw-bold">Why Choose YOUr WRITEs?</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card feature-card text-white h-100">
+            <div class="card-body text-center">
+              <h5 class="card-title text-info mb-3">
+                Scientific Learning System
+              </h5>
+              <p class="card-text">
+                Based on the principles of **Connectivism** and **Cognitive Load
+                Theory** for an optimal and easy-to-understand learning process.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card feature-card text-white h-100">
+            <div class="card-body text-center">
+              <h5 class="card-title text-info mb-3">Various Text Types</h5>
+              <p class="card-text">
+                Writing exercises for various text types such as **Narrative,
+                Descriptive, Recount, and Procedure** according to the JHS
+                curriculum.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card feature-card text-white h-100">
+            <div class="card-body text-center">
+              <h5 class="card-title text-info mb-3">View History & Grades</h5>
+              <p class="card-text">
+                Monitor your progress through the **Student Dashboard** which
+                displays writing history, grades, and teacher comments.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container col-10 text-center py-5">
+      <div
+        class="p-5 rounded-3"
+        style="background-color: #1a1a1a; border: 1px solid #333"
+      >
+        <h2 class="fw-bold mb-4">Ready to Start?</h2>
+        <p class="lead mb-4 text-secondary">
+          Access all materials and begin your writing practice today.
+        </p>
+        <a href="register.html" class="btn btn-success btn-lg"
+          >Register for Free</a
+        >
+      </div>
+    </div>
+
     <div
       style="
         height: 100px;
@@ -144,251 +217,45 @@
         border-bottom: 2px solid #444;
       "
     ></div>
-    <div class="container col-10 py-5" style="text-align: center; color: white">
-      <h1 class="mb-4">Welcome Back!</h1>
-      <p id="user-info" class="lead text-info"></p>
-      <p class="text-secondary">
-        Track your writing progress here. Start a new practice or check the
-        score from your Teacher.
-      </p>
-      <hr class="border-secondary" />
-    </div>
 
-    <div class="container col-10 py-3 bg-dark border rounded p-3">
-      <div
-        class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3"
-      >
-        <h2 class="text-white mb-0">My Writing History</h2>
-        <div class="d-flex flex-wrap gap-2 justify-content-end">
-          <a href="latihanmenulis.html" class="btn btn-success"
-            >+ New Writing</a
-          >
-          <button class="btn btn-secondary" onclick="sortStudentWritings()">
-            Sort A-Z
-          </button>
-          <input
-            type="text"
-            id="searchBar"
-            class="form-control bg-dark text-white border-secondary"
-            placeholder="Search writings..."
-            style="max-width: 200px"
-            oninput="filterStudentWritings()"
-          />
-        </div>
-      </div>
-      <div id="tulisanSiswaContainer">
-        <div class="text-secondary">Loading writing history...</div>
-      </div>
-    </div>
-
-    <div class="container col-10 py-5">
-      <h3 class="text-center mb-4">Types of Text You Can Learn</h3>
-      <div id="cardSlider" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <div
-              class="d-flex justify-content-center gap-3"
-              style="min-width: 0"
-            >
-              <div class="card text-bg-secondary mb-3" style="max-width: 18rem">
-                <div class="card-header">
-                  <img
-                    src="../aset gambar gitu brek/narative.jpg"
-                    class="card-img-top"
-                  />
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">NARATIVE TEXT</h5>
-                  <a href="narrativetext.html"
-                    ><p class="card-text">Learn more...</p></a
-                  >
-                </div>
-              </div>
-
-              <div class="card text-bg-secondary mb-3" style="max-width: 18rem">
-                <div class="card-header">
-                  <img
-                    src="../aset gambar gitu brek/descriptive.jpg"
-                    class="card-img-top"
-                  />
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">DESCRIPTIVE TEXT</h5>
-                  <a href="descriptivetext.html"
-                    ><p class="card-text">Learn more...</p></a
-                  >
-                </div>
-              </div>
-              <div class="card text-bg-secondary mb-3" style="max-width: 18rem">
-                <div class="card-header">
-                  <img
-                    src="../aset gambar gitu brek/descriptive.jpg"
-                    class="card-img-top"
-                  />
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">Report Text</h5>
-                  <a href="reporttext.html"
-                    ><p class="card-text">Learn more...</p></a
-                  >
-                </div>
-              </div>
-            </div>
+    <footer class="bg-dark text-white pt-4 pb-2">
+      <div class="container col-10">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <h5>About Us</h5>
+            <p>
+              This website is created for educational and informational
+              purposes. Providing quality materials and content.
+            </p>
           </div>
-          <div class="carousel-item">
-            <div
-              class="d-flex justify-content-center gap-3"
-              style="min-width: 0"
-            >
-              <div class="card text-bg-secondary mb-3" style="max-width: 18rem">
-                <div class="card-header">
-                  <img
-                    src="../aset gambar gitu brek/exposition.jpg"
-                    class="card-img-top"
-                  />
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">EXPOSITION TEXT</h5>
-                  <a href="analyticalexposition.html">
-                    <p class="card-text">Learn more...</p>
-                  </a>
-                </div>
-              </div>
 
-              <div class="card text-bg-secondary mb-3" style="max-width: 18rem">
-                <div class="card-header">
-                  <img
-                    src="../aset gambar gitu brek/recount.jpg"
-                    class="card-img-top"
-                  />
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">RECOUNT TEXT</h5>
-                  <a href="recounttext.html"
-                    ><p class="card-text">Learn more...</p></a
-                  >
-                </div>
-              </div>
+          <div class="col-md-4 mb-3">
+            <h5>Navigation</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a href="#" class="text-white text-decoration-none">Home</a>
+              </li>
+              <li>
+                <a href="#" class="text-white text-decoration-none">Material</a>
+              </li>
+              <li>
+                <a href="#" class="text-white text-decoration-none">Contact</a>
+              </li>
+            </ul>
+          </div>
 
-              <div class="card text-bg-secondary mb-3" style="max-width: 18rem">
-                <div class="card-header">
-                  <img
-                    src="../aset gambar gitu brek/procedure.jpg"
-                    class="card-img-top"
-                  />
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">PROCEDURE TEXT</h5>
-                  <a href="proceduretext.html"
-                    ><p class="card-text">Learn more...</p></a
-                  >
-                </div>
-              </div>
-            </div>
+          <div class="col-md-4 mb-3">
+            <h5>Contact Us</h5>
+            <p class="mb-1">j.sharkpapoy@gmail.com</p>
+            <p class="mb-1">+62 8211-8764-256</p>
+            <p>Cirebon, Indonesia</p>
           </div>
         </div>
-
-        <button
-          class="carousel-control-prev"
-          type="button"
-          data-bs-target="#cardSlider"
-          data-bs-slide="prev"
-        >
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        </button>
-        <button
-          class="carousel-control-next"
-          type="button"
-          data-bs-target="#cardSlider"
-          data-bs-slide="next"
-        >
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        </button>
+        <hr class="border-light" />
+        <div class="text-center">
+          <small>&copy; 2025 YOUr WRITEs. All rights reserved.</small>
+        </div>
       </div>
-    </div>
-    <script>
-      let myWritingsGlobal = []; // Stores the filtered writings
-
-      function filterStudentWritings() {
-        const query = document.getElementById("searchBar").value.toLowerCase();
-        const result = myWritingsGlobal.filter(
-          (t) =>
-            t.jenis.toLowerCase().includes(query) ||
-            t.teks.toLowerCase().includes(query)
-        );
-        renderStudentWritings(result);
-      }
-
-      function sortStudentWritings() {
-        myWritingsGlobal.sort((a, b) => a.jenis.localeCompare(b.jenis));
-        renderStudentWritings(myWritingsGlobal);
-      }
-
-      function renderStudentWritings(list) {
-        const container = document.getElementById("tulisanSiswaContainer");
-        container.innerHTML = "";
-
-        if (list.length === 0) {
-          container.innerHTML =
-            "<div class='alert alert-info mt-3'>You have no writings yet, or no search results were found. Start practicing now!</div>";
-          return;
-        }
-
-        list.forEach((item, index) => {
-          // Determine score status
-          let scoreDisplay;
-          let scoreClass;
-          let detailButton = `<button class="btn btn-sm btn-outline-info mt-2" onclick="alert('Full Text:\\n\\n${item.teks}')">View Full</button>`;
-
-          if (item.sudahDinilai) {
-            scoreDisplay = `Score: ${item.nilai}`;
-            scoreClass = item.nilai >= 70 ? "bg-success" : "bg-danger";
-          } else {
-            scoreDisplay = `Not Graded`;
-            scoreClass = "bg-warning";
-          }
-
-          // Display teacher's comment if available
-          const comment = item.komentarGuru
-            ? `<div class="p-2 mt-2" style="border-left: 3px solid #0d6efd; background-color: #2a2a2a;"><p class="card-text mb-0 text-white">Teacher's Comment: <em>${item.komentarGuru}</em></p></div>`
-            : "";
-
-          const card = document.createElement("div");
-          card.className = "card mb-3 text-white";
-          card.innerHTML = `
-                  <div class="card-body">
-                      <div class="d-flex justify-content-between align-items-center">
-                          <h5 class="card-title text-info">${item.jenis}</h5>
-                          <span class="badge ${scoreClass} p-2">${scoreDisplay}</span>
-                      </div>
-                      <small class="text-muted">Written on: ${
-                        item.tanggal
-                      }</small>
-                      <p class="card-text mt-2">${item.teks.substring(
-                        0,
-                        200
-                      )}...</p>
-                      ${comment}
-                      ${detailButton}
-                  </div>
-              `;
-          container.appendChild(card);
-        });
-      }
-
-      function displayStudentWritings(siswaNama) {
-        const semuaTulisan = JSON.parse(
-          localStorage.getItem("semuaTulisan") || "[]"
-        );
-        // Filter based on the logged-in user's name
-        myWritingsGlobal = semuaTulisan.filter(
-          (item) => item.nama === siswaNama
-        );
-        renderStudentWritings(myWritingsGlobal);
-      }
-    </script>
-    <footer class="bg-dark text-white pt-4 pb-2 mt-5">
-      <div class="container col-10"></div>
     </footer>
   </body>
 </html>
