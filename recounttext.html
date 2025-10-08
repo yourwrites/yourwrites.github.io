@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recount Text | YOUr WRITEs</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      body {
+        background-color: #121212;
+        color: white;
+      }
+      .navbar {
+        border-bottom: 2px solid #444;
+      }
+      .section-header {
+        color: #ffc107; /* Warna kuning/emas (warning) untuk tema kenangan */
+        border-bottom: 2px solid #ffc107;
+        padding-bottom: 5px;
+        margin-bottom: 20px;
+      }
+      .card-materi {
+        background-color: #1f1f1f;
+        border: 1px solid #444;
+        transition: all 0.3s;
+        border-radius: 10px;
+        height: 100%;
+      }
+      .card-materi:hover {
+        background-color: #2a2a2a;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+      .example-box {
+        background-color: #343a40;
+        border-left: 5px solid #0dcaf0; /* Biru muda (info) */
+        padding: 10px 15px;
+        border-radius: 5px;
+        margin-top: 10px;
+      }
+      /* Gaya untuk video YouTube */
+      .video-container {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%; /* Rasio aspek 16:9 */
+        height: 0;
+        overflow: hidden;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      }
+      .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">
+          <img
+            src="/aset gambar gitu brek/logoYOUr WRITES.png"
+            alt="..."
+            width="40"
+            class="ml-3"
+          />
+        </a>
+        <a class="navbar-brand h1" href="#">YOUr WRITEs - Recount Text</a>
+        <div class="ms-auto">
+          <a href="index.html" class="btn btn-outline-info"
+            ><i class="fas fa-arrow-left me-1"></i> Kembali ke Dashboard</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <div
+      style="
+        height: 100px;
+        background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+        background-repeat: repeat;
+        background-color: #2a2a2a;
+        border-bottom: 2px solid #444;
+      "
+    >
+      <div class="container py-3">
+        <h1 class="text-center text-white">Recount Text: Kisah Masa Lalu</h1>
+      </div>
+    </div>
+
+    <div class="container py-5">
+      <div class="card-materi p-4 mb-5 border-warning">
+        <h3 class="text-warning">
+          <i class="fas fa-history me-2"></i> Apa itu Recount Text?
+        </h3>
+        <p class="lead">
+          **Recount Text** adalah jenis teks yang bertujuan untuk **menceritakan
+          kembali** (to retell) peristiwa, pengalaman, atau kejadian yang
+          terjadi di masa lalu berdasarkan urutan waktu (kronologis).
+        </p>
+        <p class="mb-0">
+          Tujuannya bisa untuk **menginformasikan** atau **menghibur** pembaca.
+          Contohnya adalah menceritakan liburan, otobiografi, atau laporan
+          kecelakaan.
+        </p>
+        <hr class="text-warning" />
+        <p class="text-center mb-0 text-muted">
+          <i class="fas fa-calendar-alt me-1"></i> Fokus utamanya adalah apa
+          yang terjadi, bukan pada konflik seperti Narrative Text.
+          <i class="fas fa-calendar-alt ms-1"></i>
+        </p>
+      </div>
+
+      ---
+
+      <h2 class="section-header" id="structure">
+        <i class="fas fa-list-ol me-2"></i>1. Generic Structure (Struktur Umum)
+      </h2>
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="card-materi p-4">
+            <h5 class="text-info">
+              <i class="fas fa-map-pin me-1"></i> Orientation (Pengenalan)
+            </h5>
+            <p class="text-secondary">
+              Paragraf awal yang memperkenalkan latar belakang cerita: **Who**
+              (Siapa), **Where** (Di mana), dan **When** (Kapan) peristiwa
+              terjadi.
+            </p>
+            <div class="example-box">
+              <em class="text-white-50"
+                >Last year, my family and I went to Bali for a week-long
+                vacation.</em
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card-materi p-4">
+            <h5 class="text-success">
+              <i class="fas fa-forward me-1"></i> Events (Rangkaian Peristiwa)
+            </h5>
+            <p class="text-secondary">
+              Serangkaian paragraf yang menceritakan urutan kejadian dari awal
+              hingga akhir. Kejadian ini disusun secara kronologis.
+            </p>
+            <div class="example-box">
+              <em class="text-white-50"
+                >First, we visited Tanah Lot. Then, we spent the next day
+                exploring Ubud's rice fields. Finally, we went back home tired
+                but happy.</em
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card-materi p-4">
+            <h5 class="text-danger">
+              <i class="fas fa-undo-alt me-1"></i> Reorientation (Penutup)
+            </h5>
+            <p class="text-secondary">
+              Penutup yang berisi pandangan pribadi penulis tentang pengalaman
+              tersebut, seperti perasaan atau kesan yang didapatkan. (Opsional).
+            </p>
+            <div class="example-box">
+              <em class="text-white-50"
+                >It was the most memorable trip I had ever taken. I hope to
+                return there soon.</em
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      ---
+
+      <h2 class="section-header mt-5" id="language-features">
+        <i class="fas fa-book-open me-2"></i>2. Language Features (Ciri
+        Kebahasaan)
+      </h2>
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="card-materi p-3">
+            <h5>Simple Past Tense</h5>
+            <p class="text-secondary">
+              Wajib digunakan karena menceritakan peristiwa yang sudah terjadi
+              di masa lampau.
+            </p>
+            <p>
+              Contoh: <span class="badge bg-warning">visited</span>,
+              <span class="badge bg-warning">went</span>,
+              <span class="badge bg-warning">was</span>.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card-materi p-3">
+            <h5>Action Verb (Kata Kerja Aksi)</h5>
+            <p class="text-secondary">
+              Kata kerja yang menunjukkan tindakan atau perbuatan yang
+              dilakukan.
+            </p>
+            <p>
+              Contoh: <span class="badge bg-warning">ate</span>,
+              <span class="badge bg-warning">swam</span>,
+              <span class="badge bg-warning">walked</span>.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card-materi p-3">
+            <h5>Adverbial of Time & Sequence</h5>
+            <p class="text-secondary">
+              Menggunakan keterangan waktu dan kata hubung urutan untuk
+              menjelaskan kronologi.
+            </p>
+            <p>
+              Contoh: <span class="badge bg-warning">Last month</span>,
+              <span class="badge bg-warning">on Monday</span>,
+              <span class="badge bg-warning">Next</span>,
+              <span class="badge bg-warning">After that</span>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      ---
+
+      <h2 class="section-header mt-5" id="video">
+        <i class="fas fa-film me-2"></i>3. Tonton Video Penjelasan
+      </h2>
+      <p>
+        Simak video berikut untuk memahami lebih lanjut mengenai fungsi,
+        struktur, dan unsur kebahasaan Recount Text, serta melihat
+        contoh-contohnya:
+      </p>
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="video-container">
+            <iframe
+              width="560"
+              height="315"
+              src="https://www.youtube.com/embed/hgOaxgBQUi0"
+              title="Recount Text Kelas 10 8 | Lengkap | Purpose - Generic Structure - Language Features"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="bg-dark text-white pt-4 pb-2 mt-5">
+      <div class="container">
+        <div
+          class="text-center p-3"
+          style="background-color: rgba(0, 0, 0, 0.2)"
+        >
+          © 2024 YOUr WRITEs. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

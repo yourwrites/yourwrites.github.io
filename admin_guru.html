@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teacher Dashboard | YOUr WRITEs</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #121212;
+        color: white;
+      }
+      .card {
+        background-color: #1f1f1f;
+        border: 1px solid #444;
+      }
+      .form-control {
+        background-color: #2a2a2a;
+        color: white;
+        border: 1px solid #444;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const user = JSON.parse(localStorage.getItem("loggedInUser"));
+
+      // CORE CORRECTION: Check for 'guru' (teacher) role
+      const isTeacher = user && user.role === "guru";
+
+      if (!user || !isTeacher) {
+        alert("Access denied. Please log in as a teacher.");
+        window.location.href = "login.html";
+      }
+
+      function logout() {
+        localStorage.removeItem("loggedInUser");
+        window.location.href = "login.html";
+      }
+    </script>
+
+    <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <img
+            src="/aset gambar gitu brek/logoYOUr WRITES.png"
+            alt="..."
+            width="40"
+            class="ml-3"
+          />
+        </a>
+        <a class="navbar-brand h1" href="#">YOUr WRITEs (TEACHER)</a>
+        <span id="user-info" class="text-warning"></span>
+        <div class="dropdown ms-auto">
+          <button
+            class="btn btn-dark dropdown-toggle d-flex align-items-center"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+              alt="User"
+              width="28"
+              height="28"
+              class="rounded-circle me-2"
+            />
+            <span id="navbarUserName">Teacher</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a class="dropdown-item text-danger" href="#" onclick="logout()"
+                >Logout</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div
+      style="
+        height: 100px;
+        background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+        background-repeat: repeat;
+        background-color: #2a2a2a;
+        border-bottom: 2px solid #444;
+      "
+    ></div>
+
+    <div class="container py-5">
+      <h2 class="mb-4">TEACHER DASHBOARD: All Student Writings</h2>
+      <p class="text-info">
+        You can view all student writings saved in the system.
+      </p>
+
+      <div class="d-flex justify-content-between mb-4">
+        <input
+          type="text"
+          id="searchGuru"
+          class="form-control me-2"
+          placeholder="Search by student name or text type..."
+          oninput="filterTeacherWritings()"
+          style="max-width: 300px"
+        />
+        <button class="btn btn-primary" onclick="sortTeacherWritings()">
+          Sort A-Z
+        </button>
+      </div>
+
+      <div id="daftarTulisanSiswa" class="p-3 border rounded">
+        <p class="text-secondary">Loading writing data...</p>
+      </div>
+
+      <button class="btn btn-sm btn-danger mt-4" onclick="deleteAllWritings()">
+        Delete All Student Data (For Testing Only)
+      </button>
+    </div>
+
+    <div
+      class="modal fade"
+      id="gradingModal"
+      tabindex="-1"
+      aria-labelledby="gradingModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark">
+          <div class="modal-header border-secondary">
+            <h5 class="modal-title" id="gradingModalLabel">Grade Writing</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="gradingForm">
+              <input type="hidden" id="gradingIndex" />
+
+              <div class="mb-3">
+                <label for="modalSiswaNama" class="form-label">Student:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="modalSiswaNama"
+                  disabled
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="modalTulisan" class="form-label"
+                  >Student Text:</label
+                >
+                <textarea
+                  class="form-control"
+                  id="modalTulisan"
+                  rows="8"
+                  disabled
+                ></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label for="nilaiInput" class="form-label"
+                  >Score (0-100):</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="nilaiInput"
+                  min="0"
+                  max="100"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="komentarGuruInput" class="form-label"
+                  >Teacher's Comments:</label
+                >
+                <textarea
+                  class="form-control"
+                  id="komentarGuruInput"
+                  rows="3"
+                ></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-success w-100">
+                Save Score & Comments
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let allWritings = JSON.parse(
+        localStorage.getItem("semuaTulisan") || "[]"
+      );
+
+      document.addEventListener("DOMContentLoaded", () => {
+        if (user) {
+          document.getElementById(
+            "user-info"
+          ).textContent = `Welcome, ${user.nama} (Teacher)`;
+          document.getElementById("navbarUserName").textContent = user.nama;
+        }
+        displayTeacherWritings(allWritings);
+      });
+
+      function displayTeacherWritings(list) {
+        const container = document.getElementById("daftarTulisanSiswa");
+        container.innerHTML = "";
+
+        if (list.length === 0) {
+          container.innerHTML =
+            "<p class='text-secondary'>No student writings saved yet.</p>";
+          return;
+        }
+
+        list.forEach((item, index) => {
+          const card = document.createElement("div");
+
+          // Check grading status
+          const scoreStatus = item.sudahDinilai
+            ? `<span class="badge bg-success ms-2">SCORE: ${item.nilai}</span>`
+            : `<span class="badge bg-warning ms-2">Not Graded</span>`;
+
+          card.className = "card mb-3";
+
+          const tanggal = item.tanggal || "Date unknown";
+
+          card.innerHTML = `
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <h5 class="card-title text-info">${
+                    item.nama
+                  } <span class="badge bg-secondary">${
+            item.jenis
+          }</span> ${scoreStatus}</h5>
+                  <small class="text-muted">Written on: ${tanggal}</small>
+                  <p class="card-text mt-2">${item.teks.substring(
+                    0,
+                    200
+                  )}...</p>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-primary" onclick="viewDetail(${index})">Grade</button>
+                  <button class="btn btn-sm btn-danger ms-2" onclick="deleteTeacherWriting(${index})">Delete</button>
+                </div>
+              </div>
+            </div>
+        `;
+
+          container.appendChild(card);
+        });
+      }
+
+      function filterTeacherWritings() {
+        const query = document.getElementById("searchGuru").value.toLowerCase();
+        const result = allWritings.filter(
+          (t) =>
+            t.nama.toLowerCase().includes(query) ||
+            t.jenis.toLowerCase().includes(query) ||
+            t.teks.toLowerCase().includes(query)
+        );
+        displayTeacherWritings(result);
+      }
+
+      function sortTeacherWritings() {
+        allWritings.sort((a, b) => a.nama.localeCompare(b.nama));
+        displayTeacherWritings(allWritings);
+      }
+
+      function deleteTeacherWriting(index) {
+        if (
+          confirm(
+            `Are you sure you want to delete this writing from ${allWritings[index].nama}?`
+          )
+        ) {
+          allWritings.splice(index, 1);
+          localStorage.setItem("semuaTulisan", JSON.stringify(allWritings));
+          displayTeacherWritings(allWritings);
+          alert("Writing successfully deleted!");
+        }
+      }
+
+      function deleteAllWritings() {
+        if (
+          confirm(
+            "WARNING: This will delete ALL student writing data. Continue?"
+          )
+        ) {
+          localStorage.removeItem("semuaTulisan");
+          allWritings = [];
+          displayTeacherWritings(allWritings);
+          alert("All student writing data has been deleted.");
+        }
+      }
+
+      function viewDetail(index) {
+        const item = allWritings[index];
+
+        document.getElementById("gradingIndex").value = index;
+        document.getElementById("modalSiswaNama").value = item.nama;
+        document.getElementById("modalTulisan").value = item.teks;
+        document.getElementById("nilaiInput").value = item.nilai || "";
+        document.getElementById("komentarGuruInput").value =
+          item.komentarGuru || "";
+
+        const modalElement = document.getElementById("gradingModal");
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+      }
+
+      document
+        .getElementById("gradingForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const index = document.getElementById("gradingIndex").value;
+          const score = document.getElementById("nilaiInput").value;
+          const teacherComment =
+            document.getElementById("komentarGuruInput").value;
+
+          allWritings[index].nilai = parseInt(score);
+          allWritings[index].komentarGuru = teacherComment;
+          allWritings[index].sudahDinilai = true;
+
+          localStorage.setItem("semuaTulisan", JSON.stringify(allWritings));
+
+          const modalElement = document.getElementById("gradingModal");
+          const modal = bootstrap.Modal.getInstance(modalElement);
+          modal.hide();
+
+          displayTeacherWritings(allWritings);
+          alert("Score and comments successfully saved!");
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
