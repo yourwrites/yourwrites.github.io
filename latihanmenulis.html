@@ -23,9 +23,9 @@
       .form-select:focus {
         background-color: #2a2a2a;
         color: #ffffff;
+        border-color: #0d6efd;
       }
       .bg-content {
-        /* Diubah dari .bg-white menjadi .bg-content */
         background-color: #2a2a2a !important;
         color: #ffffff;
       }
@@ -63,23 +63,17 @@
       }
     </style>
     <script>
-      const user = JSON.parse(localStorage.getItem("loggedInUser"));
+      // PERBAIKAN: Pastikan objek user diambil dengan aman
+      const user = JSON.parse(localStorage.getItem("loggedInUser") || "{}");
 
-      if (!user) {
+      if (!user || !user.nama) {
         alert("Anda harus login untuk mengakses halaman ini.");
         window.location.href = "login.html";
       }
 
-      // Menambahkan cek peran guru seperti yang ada di file original Anda, jika ada
-      if (user && user.role === "guru") {
-        // Asumsi: jika ada properti role atau menggunakan email khusus
-        // Saya asumsikan role siswanya tidak disimpan, jadi hanya cek guru jika ada
-      }
-
       document.addEventListener("DOMContentLoaded", () => {
-        if (user) {
+        if (user && user.nama) {
           const namaSiswaInput = document.getElementById("namaSiswa");
-          // Mengisi nama siswa secara otomatis dan menonaktifkan inputnya
           namaSiswaInput.value = user.nama;
           namaSiswaInput.setAttribute("disabled", "true");
         }
@@ -90,7 +84,7 @@
   <body>
     <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
       <div class="container-fluid">
-        <a class="navbar-brand" href="user_siswa.html">
+        <a class="navbar-brand" href="index.html">
           <img
             src="/aset gambar gitu brek/logoYOUr WRITES.png"
             alt="..."
@@ -100,7 +94,7 @@
         </a>
         <a class="navbar-brand h1" href="#">YOUr WRITEs</a>
         <div class="ms-auto">
-          <a href="user_siswa.html" class="btn btn-outline-info"
+          <a href="index.html" class="btn btn-outline-info"
             >Kembali ke Dashboard</a
           >
         </div>
@@ -157,11 +151,14 @@
           ></textarea>
         </div>
 
-        <button type="submit" class="btn btn-success">Save</button>
+        <button type="submit" class="btn btn-success" id="saveButton">
+          Save
+        </button>
         <button
           type="button"
           class="btn btn-warning ms-2"
           onclick="koreksiOtomatis(this)"
+          id="checkButton"
         >
           <span id="checkText">Grammar Check</span>
         </button>
@@ -195,10 +192,8 @@
           panduan[jenis] || "Pilih jenis teks untuk melihat panduan.";
       }
 
-      function formatErrorContext(text, offset, length, errorIndex) {
-        // Fungsi untuk memasukkan tag <mark> di sekitar kesalahan
-        // Kami menggunakan index kesalahan untuk memastikan tag <mark> unik jika diperlukan,
-        // tapi di sini cukup menggunakan tag mark biasa
+      // Fungsi untuk memasukkan tag <mark> di sekitar kesalahan
+      function formatErrorContext(text, offset, length) {
         const before = text.substring(0, offset);
         const error = text.substring(offset, offset + length);
         const after = text.substring(offset + length);
@@ -209,21 +204,32 @@
         const teks = document.getElementById("jawaban").value; // Ambil teks asli termasuk baris baru
         const hasilKoreksiDiv = document.getElementById("hasilKoreksi");
         const highlightedTextDiv = document.getElementById("highlightedText");
-        const originalButtonText = button.querySelector("#checkText");
+        const originalButtonTextSpan = button.querySelector("#checkText");
+        const saveButton = document.getElementById("saveButton");
 
         if (!teks.trim()) {
           hasilKoreksiDiv.innerHTML = `<div class="alert alert-danger" role="alert">Tolong tuliskan teks terlebih dahulu!</div>`;
           highlightedTextDiv.innerHTML = `<p class="text-secondary mb-0">Tekan "Grammar Check" untuk melihat hasilnya.</p>`;
+
+          // PERBAIKAN BUG KRITIS: Memastikan tombol aktif kembali jika teks kosong
+          originalButtonTextSpan.textContent = "Grammar Check";
+          button.disabled = false;
+          saveButton.disabled = false;
           return;
         }
 
-        originalButtonText.textContent = "Checking...";
+        // Menonaktifkan tombol untuk mencegah klik ganda dan submission
+        originalButtonTextSpan.textContent = "Checking...";
         button.disabled = true;
+        saveButton.disabled = true;
+
         hasilKoreksiDiv.innerHTML = `<div class="text-warning mt-3">Sedang mengecek tata bahasa, harap tunggu...</div>`;
         highlightedTextDiv.innerHTML = `<p class="text-warning mb-0">Memproses teks...</p>`;
 
         try {
-          // Menggunakan LanguageTool API
+          // DEBUGGING: Cek teks yang dikirim
+          // console.log("Teks yang dikirim:", teks.length, `"${teks}"`);
+
           const response = await fetch(
             "https://api.languagetool.org/v2/check",
             {
@@ -237,7 +243,9 @@
           );
 
           if (!response.ok) {
-            throw new Error(`API returned status ${response.status}`);
+            throw new Error(
+              `API returned status ${response.status}: ${response.statusText}`
+            );
           }
 
           const result = await response.json();
@@ -250,18 +258,18 @@
             feedbackHTML += `<div class="alert alert-success" role="alert">🎉 Tidak ada kesalahan tata bahasa ditemukan! Tulisanmu sudah bagus.</div>`;
             highlightedTextDiv.innerHTML = `<p>${teks}</p>`;
           } else {
-            // 1. BUAT TEKS YANG DI-HIGHLIGHT (Revisi dari belakang agar offset tidak berubah)
-            // Clone matches dan urutkan berdasarkan offset DESC
+            // 1. BUAT TEKS YANG DI-HIGHLIGHT
+            // Gunakan properti offset dan length di level 'match' (lebih standar dan aman)
             const sortedMatches = [...matches].sort(
-              (a, b) => b.context.offset - a.context.offset
+              (a, b) => b.offset - a.offset
             );
 
-            sortedMatches.forEach((match, i) => {
+            sortedMatches.forEach((match) => {
+              // PERBAIKAN KRITIS: Menggunakan match.offset dan match.length
               markedText = formatErrorContext(
                 markedText,
-                match.context.offset,
-                match.context.length,
-                i
+                match.offset,
+                match.length
               );
             });
 
@@ -272,12 +280,12 @@
             feedbackHTML += `<div class="mt-3">`;
 
             matches.forEach((match, i) => {
-              const contextText = teks.substring(
-                match.context.offset,
-                match.context.offset + match.context.length
+              // PERBAIKAN: Mengambil konteks dari match.offset/length
+              const errorText = teks.substring(
+                match.offset,
+                match.offset + match.length
               );
 
-              // Ambil maksimal 3 saran
               const suggestions =
                 match.replacements
                   .map(
@@ -287,7 +295,7 @@
                   .slice(0, 3)
                   .join(", ") || "Tidak ada saran perbaikan";
 
-              // Gunakan deskripsi aturan jika pesan utama kurang jelas
+              // Gunakan match.rule.category.name jika tersedia
               const ruleCategory = match.rule.category.name || "Koreksi Umum";
 
               feedbackHTML += `
@@ -295,7 +303,7 @@
                   <p class="mb-1 fw-bold text-danger">#${
                     i + 1
                   }. ${ruleCategory}</p>
-                  <p class="mb-1"><strong>Kesalahan:</strong> Terdapat kata/frasa <span class="highlight-error-text">"${contextText}"</span>.</p>
+                  <p class="mb-1"><strong>Kesalahan:</strong> Terdapat kata/frasa <span class="highlight-error-text">"${errorText}"</span>.</p>
                   <p class="mb-1"><strong>Penjelasan:</strong> ${
                     match.message
                   }.</p>
@@ -308,11 +316,13 @@
 
           hasilKoreksiDiv.innerHTML = feedbackHTML;
         } catch (error) {
-          hasilKoreksiDiv.innerHTML = `<div class="alert alert-danger" role="alert">❌ Gagal melakukan pemeriksaan: ${error.message}. Pastikan koneksi internet stabil.</div>`;
+          hasilKoreksiDiv.innerHTML = `<div class="alert alert-danger" role="alert">❌ Gagal melakukan pemeriksaan: ${error.message}. Pastikan koneksi internet stabil dan teks tidak terlalu panjang.</div>`;
           highlightedTextDiv.innerHTML = `<p class="text-danger mb-0">Pengecekan gagal.</p>`;
         } finally {
-          originalButtonText.textContent = "Grammar Check";
+          // Selalu aktifkan kembali tombol setelah proses selesai
+          originalButtonTextSpan.textContent = "Grammar Check";
           button.disabled = false;
+          saveButton.disabled = false;
         }
       }
 
@@ -325,7 +335,7 @@
           const jenis = document.getElementById("jenisTeks").value;
           const teks = document.getElementById("jawaban").value;
 
-          const userName = user ? user.nama : "Anonim";
+          const userName = user && user.nama ? user.nama : "Anonim";
 
           const tulisanBaru = {
             nama: userName,
@@ -343,14 +353,15 @@
           localStorage.setItem("semuaTulisan", JSON.stringify(semuaTulisan));
 
           document.getElementById("formLatihan").reset();
-          document.getElementById("panduanTeks").innerHTML = "";
+          document.getElementById("panduanTeks").innerHTML =
+            "Pilih jenis teks untuk melihat panduan.";
           document.getElementById("hasilKoreksi").innerHTML = "";
           document.getElementById(
             "highlightedText"
           ).innerHTML = `<p class="text-secondary mb-0">Tekan "Grammar Check" untuk melihat hasilnya.</p>`;
 
           // Set nama otomatis lagi setelah reset
-          if (user) {
+          if (user && user.nama) {
             document.getElementById("namaSiswa").value = user.nama;
           }
 
@@ -358,8 +369,6 @@
             "Tulisan berhasil disimpan. Kembali ke halaman utama untuk melihatnya!"
           );
         });
-
-      document.addEventListener("DOMContentLoaded", tampilkanPanduan);
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
